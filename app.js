@@ -24,35 +24,67 @@ const articlesSchema = new mongoose.Schema({
 });
 const Article = mongoose.model("Article", articlesSchema);
 
-app.delete("/articles", async (req,res) => {
-  try {
-    const result = await Article.find();
-    res.send(result);
-  } catch(error) {
-    res.send(error);
-  }
-});
 
-app.post("/articles", async (req,res) => {
-  try {
-    const title = req.body.title;
-    const content = req.body.content;
-    const newArticle = new Article({"title": title, "content": content});
-    await newArticle.save();
-    res.send(newArticle);
-  } catch(error) {
-    res.send(error);
-  }
-});
+app.route("/articles")
+  .get(async (req, res) => {
+    try {
+      const result = await Article.find();
+      res.send(result);
+    } catch(error) {
+      res.send(error);
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      const title = req.body.title;
+      const content = req.body.content;
+      const newArticle = new Article({"title": title, "content": content});
+      await newArticle.save();
+      res.send(newArticle);
+    } catch(error) {
+      res.send(error);
+    }
+  })
+  .delete(async (req, res) => {
+    try {
+      await Article.deleteMany();
+      const currentArticles = await Article.find();
+      res.send(currentArticles);
+    } catch(error) {
+      res.send(error);
+    }
+  })
 
-app.delete("/articles", async (req,res) => {
-  try {
-    await Article.deleteMany();
-    const currentArticles = await Article.find();
-    res.send(currentArticles);
-  } catch(error) {
-    res.send(error);
-  }
-});
+
+// app.get("/articles", async (req,res) => {
+//   try {
+//     const result = await Article.find();
+//     res.send(result);
+//   } catch(error) {
+//     res.send(error);
+//   }
+// });
+
+// app.post("/articles", async (req,res) => {
+//   try {
+//     const title = req.body.title;
+//     const content = req.body.content;
+//     const newArticle = new Article({"title": title, "content": content});
+//     await newArticle.save();
+//     res.send(newArticle);
+//   } catch(error) {
+//     res.send(error);
+//   }
+// });
+
+// app.delete("/articles", async (req,res) => {
+//   try {
+//     await Article.deleteMany();
+//     const currentArticles = await Article.find();
+//     res.send(currentArticles);
+//   } catch(error) {
+//     res.send(error);
+//   }
+// });
 
 app.listen(process.env.PORT || 3000, () => console.log("Server listening in port 3000"));
