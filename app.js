@@ -24,7 +24,7 @@ const articlesSchema = new mongoose.Schema({
 });
 const Article = mongoose.model("Article", articlesSchema);
 
-app.get("/articles", async (req,res) => {
+app.delete("/articles", async (req,res) => {
   try {
     const result = await Article.find();
     res.send(result);
@@ -40,6 +40,16 @@ app.post("/articles", async (req,res) => {
     const newArticle = new Article({"title": title, "content": content});
     await newArticle.save();
     res.send(newArticle);
+  } catch(error) {
+    res.send(error);
+  }
+});
+
+app.delete("/articles", async (req,res) => {
+  try {
+    await Article.deleteMany();
+    const currentArticles = await Article.find();
+    res.send(currentArticles);
   } catch(error) {
     res.send(error);
   }
